@@ -1,0 +1,4 @@
+name = "D4M"
+uuid = "31cee4de-d04e-4d9a-89b9-e56b3e99af1b"
+authors = ["threadedblue <geoffry.roberts@gmail.com>"]
+version = "0.1.0"

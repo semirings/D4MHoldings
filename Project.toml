@@ -1,0 +1,4 @@
+[deps]
+D4M = "31cee4de-d04e-4d9a-89b9-e56b3e99af1b"
+D4MDb = "9dbb47cd-a887-4890-ad46-37090333005f"
+D4MHttp = "127dc13c-2b98-4fa7-b57d-e707aaadb8eb"

@@ -1,0 +1,9 @@
+[server]
+address = "127.0.0.1"
+port = 5101
+
+[database]
+host = "localhost"
+port = 5102
+user = "admin"
+password = "secret"

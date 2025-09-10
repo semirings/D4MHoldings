@@ -1,0 +1,20 @@
+# This file is machine-generated - editing it directly is not advised
+
+julia_version = "1.11.4"
+manifest_format = "2.0"
+project_hash = "adbcc6f411c9adbf87c06e4dfe1e007f7848e6ec"
+
+[[deps.D4M]]
+path = "packages/D4M"
+uuid = "31cee4de-d04e-4d9a-89b9-e56b3e99af1b"
+version = "0.1.0"
+
+[[deps.D4MDb]]
+path = "packages/D4MDb"
+uuid = "9dbb47cd-a887-4890-ad46-37090333005f"
+version = "0.1.0"
+
+[[deps.D4MHttp]]
+path = "packages/D4MHttp"
+uuid = "127dc13c-2b98-4fa7-b57d-e707aaadb8eb"
+version = "0.1.0"

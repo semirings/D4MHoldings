@@ -1,0 +1,4 @@
+name = "D4MHttp"
+uuid = "127dc13c-2b98-4fa7-b57d-e707aaadb8eb"
+authors = ["threadedblue <geoffry.roberts@gmail.com>"]
+version = "0.1.0"
