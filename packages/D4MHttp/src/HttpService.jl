@@ -1,16 +1,16 @@
+############ HttpService.jl ############
 module HttpService
+using ..HttpClient
 
-using CSV
-using DataFrames
-using HTTP
+struct Service
+    client::HttpClient.Client
+end
 
-export readCsvService
-
-function readCsvService()
-    df = CSV.read("/Users/gcr/d4m.Wk/A.csv", DataFrame)
-    rows = [join(row, ", ") for row in eachrow(df)]
-    body = join(rows, "\n")
-    return HTTP.Response(200, body)
+"Orchestrates work; calls HttpClient for DB/API"
+function doQuery(service::Service, payload::String, tableName::String)
+    # Validate, transform, call D4M, etc., as needed
+    # Example: delegate to client
+    return HttpClient.postQuery(service.client, payload, tableName)
 end
 
 end # module

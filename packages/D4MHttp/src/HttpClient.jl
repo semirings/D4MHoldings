@@ -1,55 +1,33 @@
-module HTTPClient
+############ HttpClient.jl ############
+module HttpClient
+using URIs, HTTP, JSON3
 
-using HTTP
-using JSON3
+struct Client
+    baseUri::URIs.URI
+    cookieJar::HTTP.Cookies.CookieJar
+    readTimeout::Float64
+    connectTimeout::Float64
+end
 
-const dbUrl = Ref{String}()
+function Client(baseUri::URIs.URI; cookieJar=HTTP.Cookies.CookieJar(), readTimeout=15.0, connectTimeout=10.0)
+    new(baseUri, cookieJar, readTimeout, connectTimeout)
+end
 
-export setQuery, getNextChunk
+endpoint(c::Client, path::AbstractString) =
+    URIs.URI(scheme=c.baseUri.scheme, host=c.baseUri.host, port=c.baseUri.port,
+             path = startswith(path, "/") ? path : "/" * path)
 
-const cookieJar = HTTP.Cookies.CookieJar()
-
-function setQuery(payload::String, tableName::String)
-    data = Dict("payload" => payload, "tableName" => tableName)
-    response = HTTP.post(
-        "http://localhost:8080/qry/init",
+function postQuery(client::Client, payload::String, tableName::String)
+    body = JSON3.write((; payload, tableName))
+    res = HTTP.post(
+        string(endpoint(client, "/qry/init")),
         ["Content-Type" => "application/json"],
-        JSON3.write(data);
-        cookies = cookieJar
+        body;
+        cookies = client.cookieJar,
+        readtimeout = client.readTimeout,
+        connect_timeout = client.connectTimeout,
     )
-    return JSON3.read(response.body)
-end
-
-function getNextChunk()
-    response = HTTP.get("http://localhost:8080/qry/next"; cookies = cookieJar)
-    return JSON3.read(response.body)
-end
-
-function jsonToAssocDedup(parsed)
-    aa = Dict{Tuple{String,String}, String}()
-
-    for entry in parsed.rows
-        key = (String(entry.row), String(entry.col))
-        aa[key] = String(entry.val)
-    end
-
-    rows = String[]
-    cols = String[]
-    vals = String[]
-
-    for ((r, c), v) in aa
-        push!(rows, r)
-        push!(cols, c)
-        push!(vals, v)
-    end
-
-    return Assoc(rows, cols, vals)
-end
-
-function query()
-    T = getNextChunk()
-    A = jsonToAssocDedup(T)
-    return A
+    return JSON3.read(res.body)
 end
 
 end # module
