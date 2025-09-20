@@ -1,5 +1,5 @@
 # HttpServer.jl
-module HttpServer
+module D4MHttpServer
 using HTTP, JSON3, Logging
 
 # Keep handles so we can shut down programmatically

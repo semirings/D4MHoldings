@@ -1,5 +1,5 @@
 ############ HttpService.jl ############
-module HttpService
+module D4MHttpService
 using ..HttpClient
 
 struct Service
@@ -7,7 +7,7 @@ struct Service
 end
 
 "Orchestrates work; calls HttpClient for DB/API"
-function doQuery(service::Service, payload::String, tableName::String)
+function postQuery(service::Service, payload::String, tableName::String)
     # Validate, transform, call D4M, etc., as needed
     # Example: delegate to client
     return HttpClient.postQuery(service.client, payload, tableName)
