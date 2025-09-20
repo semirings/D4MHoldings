@@ -1,5 +1,14 @@
 module D4MHttp
+# Include submodules
 
-greet() = print("Hello World!")
+include(joinpath(@__DIR__, "D4MHttpClient.jl"))
+include(joinpath(@__DIR__, "D4MHttpServer.jl"))
 
-end # module D4MHttp
+# Bring them into this module
+using D4M
+using .D4MHttpClient
+using .D4MHttpServer
+
+export start, stop, getQuery, postQuery, D4MHttp.D4MHttpClient: Client
+
+end
