@@ -1,17 +1,19 @@
 ############ HttpClient.jl ############
 module D4MHttpClient
-using URIs: URI, HTTP, JSON3
+using URIs, HTTP, JSON3
+using HTTP.Cookies: CookieJar
 
 struct Client
-    baseUri::URIs.URI
-    cookieJar::HTTP.Cookies.CookieJar
+    baseUri::URI
+    cookieJar::CookieJar
     readTimeout::Float64
     connectTimeout::Float64
 end
 
-function Client(baseUri::URIs.URI; cookieJar=HTTP.Cookies.CookieJar(), readTimeout=15.0, connectTimeout=10.0)
-    new(baseUri, cookieJar, readTimeout, connectTimeout)
-end
+Client(baseUri::URI; cookieJar=CookieJar(), readTimeout=15.0, connectTimeout=10.0) =
+    Client(baseUri, cookieJar, float(readTimeout), float(connectTimeout))
+
+Client(base::AbstractString; kwargs...) = Client(URI(base); kwargs...)
 
 endpoint(c::Client, path::AbstractString) =
     URIs.URI(scheme=c.baseUri.scheme, host=c.baseUri.host, port=c.baseUri.port,

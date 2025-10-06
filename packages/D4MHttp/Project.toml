@@ -2,3 +2,11 @@ name = "D4MHttp"
 uuid = "127dc13c-2b98-4fa7-b57d-e707aaadb8eb"
 authors = ["threadedblue <geoffry.roberts@gmail.com>"]
 version = "0.1.0"
+[deps]
+HTTP  = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+URIs  = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+Dates         = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+D4M = "31cee4de-d04e-4d9a-89b9-e56b3e99af1b"

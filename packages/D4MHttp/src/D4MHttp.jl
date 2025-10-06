@@ -9,6 +9,6 @@ using D4M
 using .D4MHttpClient
 using .D4MHttpServer
 
-export start, stop, getQuery, postQuery, D4MHttp.D4MHttpClient: Client
+export start, stop, getQuery, postQuery, Client
 
 end
