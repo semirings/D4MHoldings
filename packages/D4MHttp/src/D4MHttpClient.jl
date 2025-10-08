@@ -6,11 +6,11 @@ using HTTP.Cookies: CookieJar
 struct Client
     baseUri::URI
     cookieJar::CookieJar
-    readTimeout::Float64
-    connectTimeout::Float64
+    readTimeout::Int64
+    connectTimeout::Int64
 end
 
-Client(baseUri::URI; cookieJar=CookieJar(), readTimeout=15.0, connectTimeout=10.0) =
+Client(baseUri::URI; cookieJar=CookieJar(), readTimeout=15, connectTimeout=10) =
     Client(baseUri, cookieJar, float(readTimeout), float(connectTimeout))
 
 Client(base::AbstractString; kwargs...) = Client(URI(base); kwargs...)
