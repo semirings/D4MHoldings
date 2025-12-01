@@ -105,6 +105,92 @@ function ReadCSV1(input::Union{IOStream, String}, del = ',', eol = '\n'; quotes 
     end
 end
 
+"""
+    ReadJSON(d::Dict{String,Any}) -> Assoc
+
+    Build a D4M Assoc from a Dict with keys "rows", "cols", "vals".
+    The three arrays must be the same length.
+"""
+function ReadJSON(d::Dict{String,Any})
+    # Force rows/cols to String keys (good for FHIR paths etc.)
+    rows = String.(d["rows"])
+    cols = String.(d["cols"])
+
+    # Values can be left as-is; D4M handles strings or numbers.
+    vals = d["vals"]
+
+    # D4M.jl supports Assoc(row_vec, col_vec, val_vec) style construction
+    return Assoc(rows, cols, vals)
+end
+
+"""
+    assoc_from_json_file(path::AbstractString) -> Assoc
+
+    Read a rows/cols/vals JSON file and construct an Assoc.
+"""
+function ReadJSON(path::AbstractString)
+    d = JSON.parsefile(path)
+    @assert haskey(d, "rows") && haskey(d, "cols") && haskey(d, "vals") \
+        "JSON must have keys: rows, cols, vals"
+    return ReadJSON(d)
+end
+
+"""
+    writeJSON(A) -> Dict{String,Any}
+
+    Convert an Assoc to a Dict with "rows", "cols", "vals" triples.
+
+    This expands the internal compressed representation (row/col/val/adj)
+    back into explicit (row, col, value) triples.
+"""
+function writeJSON(A)
+    # D4M.jl stores:
+    #   A.row :: Vector (unique row keys)
+    #   A.col :: Vector (unique col keys)
+    #   A.val :: Float64 OR Vector (value dictionary)
+    #   A.adj :: Sparse matrix over indices into A.val or raw numeric values
+    I, J, V = findnz(A.adj)
+
+    rows = String[]
+    cols = String[]
+    vals = Any[]
+
+    if A.val isa Float64
+        # Numeric AA: values are stored directly in A.adj
+        for k in eachindex(I)
+            push!(rows, String(A.row[I[k]]))
+            push!(cols, String(A.col[J[k]]))
+            push!(vals, V[k])
+        end
+    else
+        # String (or general) AA: A.adj holds indices into A.val
+        for k in eachindex(I)
+            push!(rows, String(A.row[I[k]]))
+            push!(cols, String(A.col[J[k]]))
+            push!(vals, A.val[V[k]])  # look up actual value
+        end
+    end
+
+    return Dict(
+        "rows" => rows,
+        "cols" => cols,
+        "vals" => vals,
+    )
+end
+
+"""
+    writeJSON(path::AbstractString, A; indent=2)
+
+    Write an Assoc to `path` as pretty JSON with keys "rows", "cols", "vals".
+"""
+function writeJSON(path::AbstractString, A; indent::Integer = 2)
+    d = writeJSON(A)
+    open(path, "w") do io
+        JSON.print(io, d, indent)  # pretty-print with indentation
+    end
+    return nothing
+end
+
 #=
 Writing and Reading JLD Files
 Assoc Serialized for saving
